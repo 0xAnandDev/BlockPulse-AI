@@ -76,7 +76,13 @@ _Backend setup instructions will be added once the NestJS service is scaffolded.
 
 ### Frontend
 
-_Frontend setup instructions will be added once the TanStack Start app is imported into `/frontend`._
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000` to view the landing page.
 
 ### Smart contracts
 
