@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import LiquidEther from '../components/LiquidEther'
+import BlurText from '../components/BlurText'
 
 export const Route = createFileRoute('/')({ component: LandingPage })
 
@@ -86,14 +87,22 @@ function LandingPage() {
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[var(--cyan)]" />
             Live on-chain monitoring &middot; Blockchain / AI track
           </span>
-          <h1 className="display-title max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[var(--ink)] sm:text-6xl">
-            Know the moment your crypto is at risk.
-          </h1>
-          <p className="mt-6 max-w-2xl text-base text-[var(--ink-soft)] sm:text-lg">
-            BlockPulse AI watches your wallets and smart contracts around the clock, catches
-            suspicious on-chain activity as it happens, and explains it in plain English &mdash;
-            before you have to ask.
-          </p>
+          <BlurText
+            as="h1"
+            text="Know the moment your crypto is at risk."
+            animateBy="words"
+            direction="top"
+            delay={90}
+            className="display-title max-w-4xl justify-center text-4xl font-bold leading-[1.05] tracking-tight text-[var(--ink)] sm:text-6xl"
+          />
+          <BlurText
+            as="p"
+            text="BlockPulse AI watches your wallets and smart contracts around the clock, catches suspicious on-chain activity as it happens, and explains it in plain English — before you have to ask."
+            animateBy="words"
+            direction="top"
+            delay={18}
+            className="mt-6 max-w-2xl justify-center text-base text-[var(--ink-soft)] sm:text-lg"
+          />
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#pipeline"
@@ -122,9 +131,14 @@ function LandingPage() {
         <section className="mt-8 grid gap-6 py-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div>
             <p className="kicker mb-3">The problem</p>
-            <h2 className="display-title text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-              One dashboard. No more tab-hopping.
-            </h2>
+            <BlurText
+              as="h2"
+              text="One dashboard. No more tab-hopping."
+              animateBy="words"
+              direction="top"
+              delay={70}
+              className="display-title text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+            />
             <p className="mt-4 max-w-lg text-[var(--ink-soft)]">
               Right now, knowing what happened to your assets means checking half a dozen
               disconnected tools by hand &mdash; and none of them tell you what it means or what
@@ -144,9 +158,14 @@ function LandingPage() {
         {/* Pipeline */}
         <section id="pipeline" className="scroll-mt-24 py-16">
           <p className="kicker mb-3 text-center">How it works</p>
-          <h2 className="display-title text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-            One continuous pipeline, from chain to notification
-          </h2>
+          <BlurText
+            as="h2"
+            text="One continuous pipeline, from chain to notification"
+            animateBy="words"
+            direction="top"
+            delay={70}
+            className="display-title justify-center text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+          />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             {PIPELINE_STEPS.map((step, i) => (
               <div key={step.title} className="panel rise-in relative rounded-2xl p-5" style={{ animationDelay: `${i * 70}ms` }}>
@@ -163,9 +182,14 @@ function LandingPage() {
         {/* Detection types */}
         <section id="detection" className="scroll-mt-24 py-16">
           <p className="kicker mb-3 text-center">Detection engine</p>
-          <h2 className="display-title text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-            Four risk signals, watched continuously
-          </h2>
+          <BlurText
+            as="h2"
+            text="Four risk signals, watched continuously"
+            animateBy="words"
+            direction="top"
+            delay={70}
+            className="display-title justify-center text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+          />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {DETECTIONS.map((d) => (
               <div key={d.title} className="panel rounded-2xl p-5">
@@ -182,9 +206,14 @@ function LandingPage() {
           <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
             <div>
               <p className="kicker mb-3">AI insight engine</p>
-              <h2 className="display-title text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-                Not just an alert &mdash; an explanation.
-              </h2>
+              <BlurText
+                as="h2"
+                text="Not just an alert — an explanation."
+                animateBy="words"
+                direction="top"
+                delay={70}
+                className="display-title text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+              />
               <p className="mt-4 max-w-lg text-[var(--ink-soft)]">
                 Every detected event is sent to Claude for structured analysis, so you get a
                 risk level, a plain-English reason, and a concrete recommendation &mdash; not just
@@ -212,9 +241,14 @@ function LandingPage() {
         {/* Tech stack */}
         <section id="stack" className="scroll-mt-24 py-16">
           <p className="kicker mb-3 text-center">Under the hood</p>
-          <h2 className="display-title text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-            Built to keep growing after the hackathon
-          </h2>
+          <BlurText
+            as="h2"
+            text="Built to keep growing after the hackathon"
+            animateBy="words"
+            direction="top"
+            delay={70}
+            className="display-title justify-center text-center text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+          />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STACK.map((group) => (
               <div key={group.layer} className="panel rounded-2xl p-5">
@@ -231,9 +265,14 @@ function LandingPage() {
 
         {/* Final CTA */}
         <section className="panel rise-in my-16 rounded-[2rem] px-6 py-14 text-center sm:px-12">
-          <h2 className="display-title text-3xl font-bold text-[var(--ink)] sm:text-4xl">
-            Stop checking five tabs to know what happened to your crypto.
-          </h2>
+          <BlurText
+            as="h2"
+            text="Stop checking five tabs to know what happened to your crypto."
+            animateBy="words"
+            direction="top"
+            delay={60}
+            className="display-title justify-center text-3xl font-bold text-[var(--ink)] sm:text-4xl"
+          />
           <p className="mx-auto mt-4 max-w-xl text-[var(--ink-soft)]">
             BlockPulse AI is being built live for HackHazards &apos;26. Follow along or star the
             repo to see the monitoring dashboard as it ships.
