@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import SidebarNav from '../components/SidebarNav'
 
 import appCss from '../styles.css?url'
 
@@ -43,6 +44,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(99,102,241,0.35)]">
         <Header />
+        <SidebarNav />
         {children}
         <Footer />
         <TanStackDevtools

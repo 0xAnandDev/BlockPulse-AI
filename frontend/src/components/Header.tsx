@@ -12,7 +12,7 @@ export default function Header() {
           <span className="font-display">BlockPulse AI</span>
         </Link>
 
-        <div className="order-3 flex w-full flex-wrap items-center gap-x-6 gap-y-1 pb-1 text-sm sm:order-none sm:w-auto sm:flex-nowrap sm:pb-0">
+        <div className="order-3 flex w-full flex-wrap items-center gap-x-6 gap-y-1 pb-1 text-sm sm:order-none sm:w-auto sm:flex-nowrap sm:pb-0 lg:hidden">
           <a href="#pipeline" className="nav-link">
             Pipeline
           </a>
