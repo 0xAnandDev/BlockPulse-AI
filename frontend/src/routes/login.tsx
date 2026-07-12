@@ -12,6 +12,7 @@ import PasswordInput from '../components/ui/PasswordInput'
 import Checkbox from '../components/ui/Checkbox'
 import { loginSchema, type LoginFormValues } from '../lib/validation'
 import { ApiError, loginUser } from '../lib/api/auth'
+import { setAccessToken } from '../lib/api/tokenStore'
 
 export const Route = createFileRoute('/login')({ component: LoginPage })
 
@@ -32,7 +33,8 @@ function LoginPage() {
   const onSubmit = async (values: LoginFormValues) => {
     setFormError(null)
     try {
-      await loginUser({ email: values.email, password: values.password })
+      const { accessToken } = await loginUser({ email: values.email, password: values.password })
+      setAccessToken(accessToken)
       navigate({ to: '/dashboard' })
     } catch (err) {
       setFormError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.')

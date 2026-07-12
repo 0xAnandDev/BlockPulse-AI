@@ -1,85 +1,93 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Network, RiskLevel, Wallet } from './types'
-
-const STORAGE_KEY = 'bp_wallets'
-
-function loadWallets(): Array<Wallet> {
-  if (typeof window === 'undefined') return []
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as Array<Wallet>) : []
-  } catch {
-    return []
-  }
-}
-
-function saveWallets(wallets: Array<Wallet>) {
-  if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(wallets))
-}
-
-const RISK_POOL: Array<RiskLevel> = ['low', 'low', 'low', 'medium', 'high']
+import { createWallet, deleteWallet, getWallets, updateWallet } from '../api/wallets'
+import { ApiError } from '../api/client'
+import type { Network, Wallet } from './types'
 
 interface WalletsContextValue {
   wallets: Array<Wallet>
   isLoading: boolean
-  addWallet: (input: { name: string; address: string; network: Network; monitoring: boolean }) => Wallet
-  removeWallet: (id: string) => void
-  toggleMonitoring: (id: string) => void
+  error: string | null
+  addWallet: (input: { name: string; address: string; network: Network; monitoring: boolean }) => Promise<Wallet>
+  removeWallet: (id: string) => Promise<void>
+  toggleMonitoring: (id: string) => Promise<void>
 }
 
 const WalletsContext = createContext<WalletsContextValue | null>(null)
 
+function toWallet(dto: { id: string; walletName: string; walletAddress: string; network: Network; isMonitoring: boolean; createdAt: string; updatedAt: string }): Wallet {
+  return {
+    id: dto.id,
+    walletName: dto.walletName,
+    walletAddress: dto.walletAddress,
+    network: dto.network,
+    isMonitoring: dto.isMonitoring,
+    // Placeholder until the detection engine ships — not derived from real activity yet.
+    riskScore: 'low',
+    createdAt: dto.createdAt,
+    updatedAt: dto.updatedAt,
+  }
+}
+
 export function WalletsProvider({ children }: { children: ReactNode }) {
   const [wallets, setWallets] = useState<Array<Wallet>>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setWallets(loadWallets())
-    setIsLoading(false)
-  }, [])
-
-  const persist = useCallback((next: Array<Wallet>) => {
-    setWallets(next)
-    saveWallets(next)
+    let cancelled = false
+    setIsLoading(true)
+    getWallets()
+      .then((data) => {
+        if (cancelled) return
+        setWallets(data.map(toWallet))
+        setError(null)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setError(err instanceof ApiError ? err.message : 'Could not load your wallets.')
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const addWallet = useCallback(
-    (input: { name: string; address: string; network: Network; monitoring: boolean }) => {
-      const wallet: Wallet = {
-        id: crypto.randomUUID(),
-        name: input.name,
-        address: input.address,
+    async (input: { name: string; address: string; network: Network; monitoring: boolean }) => {
+      const created = await createWallet({
+        walletName: input.name,
+        walletAddress: input.address,
         network: input.network,
-        monitoring: input.monitoring,
-        riskScore: RISK_POOL[Math.floor(Math.random() * RISK_POOL.length)],
-        lastActivity: 'Just now',
-        createdAt: new Date().toISOString(),
-      }
-      persist([wallet, ...wallets])
+        isMonitoring: input.monitoring,
+      })
+      const wallet = toWallet(created)
+      setWallets((prev) => [wallet, ...prev])
       return wallet
     },
-    [wallets, persist],
+    [],
   )
 
-  const removeWallet = useCallback(
-    (id: string) => {
-      persist(wallets.filter((w) => w.id !== id))
-    },
-    [wallets, persist],
-  )
+  const removeWallet = useCallback(async (id: string) => {
+    await deleteWallet(id)
+    setWallets((prev) => prev.filter((w) => w.id !== id))
+  }, [])
 
   const toggleMonitoring = useCallback(
-    (id: string) => {
-      persist(wallets.map((w) => (w.id === id ? { ...w, monitoring: !w.monitoring } : w)))
+    async (id: string) => {
+      const target = wallets.find((w) => w.id === id)
+      if (!target) return
+      const updated = await updateWallet(id, { isMonitoring: !target.isMonitoring })
+      setWallets((prev) => prev.map((w) => (w.id === id ? toWallet(updated) : w)))
     },
-    [wallets, persist],
+    [wallets],
   )
 
   const value = useMemo(
-    () => ({ wallets, isLoading, addWallet, removeWallet, toggleMonitoring }),
-    [wallets, isLoading, addWallet, removeWallet, toggleMonitoring],
+    () => ({ wallets, isLoading, error, addWallet, removeWallet, toggleMonitoring }),
+    [wallets, isLoading, error, addWallet, removeWallet, toggleMonitoring],
   )
 
   return <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>

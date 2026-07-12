@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { Eye, Pause, Play, Trash2 } from 'lucide-react'
 import RiskBadge from './RiskBadge'
 import type { Wallet } from '../../lib/dashboard/types'
+import { formatRelativeTime } from '../../lib/utils'
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
@@ -9,8 +10,8 @@ function shortenAddress(address: string) {
 
 export interface WalletCardProps {
   wallet: Wallet
-  onToggleMonitoring: (id: string) => void
-  onDelete: (id: string) => void
+  onToggleMonitoring: (id: string) => Promise<void>
+  onDelete: (id: string) => Promise<void>
 }
 
 export default function WalletCard({ wallet, onToggleMonitoring, onDelete }: WalletCardProps) {
@@ -25,9 +26,9 @@ export default function WalletCard({ wallet, onToggleMonitoring, onDelete }: Wal
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-semibold text-[var(--ink)]">{wallet.name}</p>
+          <p className="font-semibold text-[var(--ink)]">{wallet.walletName}</p>
           {wallet.ensName && <p className="text-xs text-[var(--cyan)]">{wallet.ensName}</p>}
-          <p className="mono mt-0.5 text-xs text-[var(--ink-faint)]">{shortenAddress(wallet.address)}</p>
+          <p className="mono mt-0.5 text-xs text-[var(--ink-faint)]">{shortenAddress(wallet.walletAddress)}</p>
         </div>
         <span className="pill flex-shrink-0">{wallet.network}</span>
       </div>
@@ -35,11 +36,11 @@ export default function WalletCard({ wallet, onToggleMonitoring, onDelete }: Wal
       <div className="flex items-center justify-between text-xs">
         <span className="flex items-center gap-1.5 text-[var(--ink-soft)]">
           <span
-            className={`h-1.5 w-1.5 rounded-full ${wallet.monitoring ? 'bg-[var(--risk-low)]' : 'bg-[var(--ink-faint)]'}`}
+            className={`h-1.5 w-1.5 rounded-full ${wallet.isMonitoring ? 'bg-[var(--risk-low)]' : 'bg-[var(--ink-faint)]'}`}
           />
-          {wallet.monitoring ? 'Monitoring active' : 'Monitoring paused'}
+          {wallet.isMonitoring ? 'Monitoring active' : 'Monitoring paused'}
         </span>
-        <span className="text-[var(--ink-faint)]">Last activity: {wallet.lastActivity}</span>
+        <span className="text-[var(--ink-faint)]">Last activity: {formatRelativeTime(wallet.updatedAt)}</span>
       </div>
 
       <div className="flex items-center justify-between border-t border-[var(--line)] pt-4">
@@ -54,16 +55,20 @@ export default function WalletCard({ wallet, onToggleMonitoring, onDelete }: Wal
           </button>
           <button
             type="button"
-            title={wallet.monitoring ? 'Pause monitoring' : 'Resume monitoring'}
-            onClick={() => onToggleMonitoring(wallet.id)}
+            title={wallet.isMonitoring ? 'Pause monitoring' : 'Resume monitoring'}
+            onClick={() => {
+              onToggleMonitoring(wallet.id).catch(() => {})
+            }}
             className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink-soft)] transition hover:bg-white/8 hover:text-[var(--ink)]"
           >
-            {wallet.monitoring ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
+            {wallet.isMonitoring ? <Pause className="h-4 w-4" aria-hidden="true" /> : <Play className="h-4 w-4" aria-hidden="true" />}
           </button>
           <button
             type="button"
             title="Delete wallet"
-            onClick={() => onDelete(wallet.id)}
+            onClick={() => {
+              onDelete(wallet.id).catch(() => {})
+            }}
             className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink-soft)] transition hover:bg-white/8 hover:text-[var(--risk-high)]"
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />

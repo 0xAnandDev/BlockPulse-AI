@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
+import { apiClient } from './client'
+export { ApiError } from './client'
 
 export interface AuthUser {
   id: string
@@ -12,49 +13,26 @@ export interface AuthResponse {
   accessToken: string
 }
 
-export class ApiError extends Error {
-  status: number
-  constructor(status: number, message: string) {
-    super(message)
-    this.status = status
-    this.name = 'ApiError'
-  }
+export async function registerUser(input: { fullName: string; email: string; password: string }) {
+  const { data } = await apiClient.post<AuthResponse>('/auth/register', input)
+  return data
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
-  })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => null)
-    throw new ApiError(res.status, body?.message ?? 'Something went wrong. Please try again.')
-  }
-
-  if (res.status === 204) return undefined as T
-  return res.json() as Promise<T>
+export async function loginUser(input: { email: string; password: string }) {
+  const { data } = await apiClient.post<AuthResponse>('/auth/login', input)
+  return data
 }
 
-export function registerUser(input: { fullName: string; email: string; password: string }) {
-  return request<AuthResponse>('/auth/register', { method: 'POST', body: JSON.stringify(input) })
+export async function refreshSession() {
+  const { data } = await apiClient.post<AuthResponse>('/auth/refresh')
+  return data
 }
 
-export function loginUser(input: { email: string; password: string }) {
-  return request<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(input) })
+export async function logoutUser() {
+  await apiClient.post<void>('/auth/logout')
 }
 
-export function refreshSession() {
-  return request<AuthResponse>('/auth/refresh', { method: 'POST' })
-}
-
-export function logoutUser() {
-  return request<void>('/auth/logout', { method: 'POST' })
-}
-
-export function fetchCurrentUser(accessToken: string) {
-  return request<AuthUser>('/users/me', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
+export async function fetchCurrentUser() {
+  const { data } = await apiClient.get<AuthUser>('/users/me')
+  return data
 }

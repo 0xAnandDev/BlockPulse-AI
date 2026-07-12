@@ -22,7 +22,7 @@ function WalletsRoute() {
 }
 
 function WalletsContent() {
-  const { wallets, isLoading, toggleMonitoring, removeWallet } = useWallets()
+  const { wallets, isLoading, error, toggleMonitoring, removeWallet } = useWallets()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
@@ -43,6 +43,11 @@ function WalletsContent() {
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-44 w-full" />
           ))}
+        </div>
+      ) : error ? (
+        <div className="panel flex flex-col items-center gap-2 rounded-2xl px-6 py-16 text-center">
+          <p className="font-semibold text-[var(--ink)]">Couldn&apos;t load your wallets</p>
+          <p className="max-w-sm text-sm text-[var(--ink-soft)]">{error}</p>
         </div>
       ) : wallets.length === 0 ? (
         <div className="panel flex flex-col items-center gap-3 rounded-2xl px-6 py-16 text-center">

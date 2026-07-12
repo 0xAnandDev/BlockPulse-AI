@@ -8,6 +8,7 @@ import Button from '../ui/Button'
 import { useWallets } from '../../lib/dashboard/store'
 import { NETWORKS } from '../../lib/dashboard/types'
 import type { Network } from '../../lib/dashboard/types'
+import { ApiError } from '../../lib/api/client'
 
 export interface AddWalletModalProps {
   isOpen: boolean
@@ -46,10 +47,14 @@ export default function AddWalletModal({ isOpen, onClose }: AddWalletModalProps)
     }
     setError(null)
     setIsSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    addWallet({ name: name.trim(), address: address.trim(), network, monitoring })
-    setIsSubmitting(false)
-    resetAndClose()
+    try {
+      await addWallet({ name: name.trim(), address: address.trim(), network, monitoring })
+      resetAndClose()
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not add this wallet. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (

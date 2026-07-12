@@ -2,6 +2,7 @@ import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { Bell, LayoutDashboard, LogOut, Settings, ShieldAlert, Sparkles, Wallet } from 'lucide-react'
 import { logoutUser } from '../../lib/api/auth'
+import { clearAccessToken } from '../../lib/api/tokenStore'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
@@ -20,6 +21,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     } catch {
       // best-effort: still clear the local session below
     }
+    clearAccessToken()
     navigate({ to: '/' })
   }
 
