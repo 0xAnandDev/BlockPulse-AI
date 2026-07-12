@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WalletsRouteImport } from './routes/wallets'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -34,6 +35,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/wallets': typeof WalletsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/wallets': typeof WalletsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/wallets': typeof WalletsRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/notifications'
+    | '/profile'
     | '/register'
     | '/settings'
     | '/wallets'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/notifications'
+    | '/profile'
     | '/register'
     | '/settings'
     | '/wallets'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/notifications'
+    | '/profile'
     | '/register'
     | '/settings'
     | '/wallets'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   SettingsRoute: typeof SettingsRoute
   WalletsRoute: typeof WalletsRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   SettingsRoute: SettingsRoute,
   WalletsRoute: WalletsRoute,

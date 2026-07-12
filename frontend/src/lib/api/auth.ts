@@ -6,6 +6,7 @@ export interface AuthUser {
   fullName: string
   email: string
   role: string
+  createdAt: string
 }
 
 export interface AuthResponse {

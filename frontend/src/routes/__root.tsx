@@ -5,7 +5,7 @@ import SidebarNav from '../components/SidebarNav'
 
 import appCss from '../styles.css?url'
 
-const APP_ROUTE_PREFIX = /^\/(dashboard|wallets|alerts|ai-insights|notifications|settings)(\/|$)/
+const APP_ROUTE_PREFIX = /^\/(dashboard|wallets|alerts|ai-insights|notifications|settings|profile)(\/|$)/
 
 export const Route = createRootRoute({
   head: () => ({

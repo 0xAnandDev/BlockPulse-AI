@@ -11,6 +11,6 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found')
     }
-    return { id: user.id, fullName: user.fullName, email: user.email, role: user.role }
+    return { id: user.id, fullName: user.fullName, email: user.email, role: user.role, createdAt: user.createdAt }
   }
 }

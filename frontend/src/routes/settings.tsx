@@ -1,13 +1,31 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import { KeyRound, Settings as SettingsIcon, ShieldCheck, User } from 'lucide-react'
 import AppShell from '../components/dashboard/AppShell'
 import Input from '../components/ui/Input'
 import Checkbox from '../components/ui/Checkbox'
 import Button from '../components/ui/Button'
+import { getCachedUser, loadCurrentUser } from '../lib/api/currentUser'
+import type { AuthUser } from '../lib/api/auth'
 
 export const Route = createFileRoute('/settings')({ component: SettingsRoute })
 
 function SettingsRoute() {
+  const [user, setUser] = useState<AuthUser | null>(getCachedUser())
+
+  useEffect(() => {
+    if (user) return
+    let cancelled = false
+    loadCurrentUser()
+      .then((u) => {
+        if (!cancelled) setUser(u)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
   return (
     <AppShell>
       <div className="mx-auto flex max-w-2xl flex-col gap-6">
@@ -25,8 +43,8 @@ function SettingsRoute() {
             <h2 className="font-semibold text-[var(--ink)]">Profile</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Full Name" defaultValue="Ada Lovelace" />
-            <Input label="Email Address" type="email" defaultValue="ada@blockpulse.ai" disabled />
+            <Input key={user?.fullName} label="Full Name" defaultValue={user?.fullName ?? ''} />
+            <Input key={user?.email} label="Email Address" type="email" defaultValue={user?.email ?? ''} disabled />
           </div>
           <Button className="mt-5 w-auto px-6">Save changes</Button>
         </section>

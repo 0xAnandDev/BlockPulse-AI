@@ -20,10 +20,11 @@ export interface SafeUser {
   fullName: string
   email: string
   role: User['role']
+  createdAt: Date
 }
 
 function toSafeUser(user: User): SafeUser {
-  return { id: user.id, fullName: user.fullName, email: user.email, role: user.role }
+  return { id: user.id, fullName: user.fullName, email: user.email, role: user.role, createdAt: user.createdAt }
 }
 
 @Injectable()
