@@ -1,4 +1,11 @@
 import 'reflect-metadata'
+
+// Prisma returns BigInt for BlockchainEvent.blockNumber / Wallet.lastProcessedBlock.
+// JSON.stringify can't serialize BigInt natively — teach it to, process-wide.
+;(BigInt.prototype as unknown as { toJSON: () => string }).toJSON = function () {
+  return this.toString()
+}
+
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
