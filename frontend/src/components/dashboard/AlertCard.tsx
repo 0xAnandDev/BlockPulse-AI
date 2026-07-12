@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { ArrowUpRight, CircleDollarSign, Crown, Moon, ShieldQuestion } from 'lucide-react'
 import RiskBadge from './RiskBadge'
-import type { AlertItem, AlertStatus } from '../../lib/mock/alerts'
+import type { AlertItem, AlertStatus } from '../../lib/dashboard/types'
 
 const ICONS: Record<AlertItem['icon'], typeof ArrowUpRight> = {
   transfer: ArrowUpRight,
@@ -13,13 +13,13 @@ const ICONS: Record<AlertItem['icon'], typeof ArrowUpRight> = {
 
 const STATUS_LABEL: Record<AlertStatus, string> = {
   open: 'Open',
-  reviewed: 'Reviewed',
+  ignored: 'Ignored',
   resolved: 'Resolved',
 }
 
 const STATUS_CLASS: Record<AlertStatus, string> = {
   open: 'text-[var(--risk-high)]',
-  reviewed: 'text-[var(--risk-medium)]',
+  ignored: 'text-[var(--ink-faint)]',
   resolved: 'text-[var(--risk-low)]',
 }
 

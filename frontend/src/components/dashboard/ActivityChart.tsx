@@ -1,34 +1,41 @@
 import { useMemo, useRef, useState } from 'react'
-import { ACTIVITY_CHART_DATA } from '../../lib/mock/chartData'
+import type { ChartPoint } from '../../lib/dashboard/types'
 
 const WIDTH = 600
 const HEIGHT = 180
 const PAD_X = 8
 const PAD_Y = 16
 
-export default function ActivityChart() {
+export interface ActivityChartProps {
+  data: Array<ChartPoint>
+}
+
+export default function ActivityChart({ data }: ActivityChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   const { linePoints, areaPath, points, maxValue } = useMemo(() => {
-    const values = ACTIVITY_CHART_DATA.map((d) => d.value)
-    const max = Math.max(...values)
+    const values = data.map((d) => d.value)
+    const max = Math.max(...values, 1)
     const min = 0
     const innerWidth = WIDTH - PAD_X * 2
     const innerHeight = HEIGHT - PAD_Y * 2
-    const step = innerWidth / (ACTIVITY_CHART_DATA.length - 1)
+    const step = innerWidth / Math.max(data.length - 1, 1)
 
-    const pts = ACTIVITY_CHART_DATA.map((d, i) => {
+    const pts = data.map((d, i) => {
       const x = PAD_X + i * step
       const y = PAD_Y + innerHeight - ((d.value - min) / (max - min || 1)) * innerHeight
       return { x, y, ...d }
     })
 
     const line = pts.map((p) => `${p.x},${p.y}`).join(' ')
-    const area = `M${pts[0].x},${HEIGHT - PAD_Y} L${pts.map((p) => `${p.x},${p.y}`).join(' L')} L${pts[pts.length - 1].x},${HEIGHT - PAD_Y} Z`
+    const area =
+      pts.length > 0
+        ? `M${pts[0].x},${HEIGHT - PAD_Y} L${pts.map((p) => `${p.x},${p.y}`).join(' L')} L${pts[pts.length - 1].x},${HEIGHT - PAD_Y} Z`
+        : ''
 
     return { linePoints: line, areaPath: area, points: pts, maxValue: max }
-  }, [])
+  }, [data])
 
   const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const svg = svgRef.current
