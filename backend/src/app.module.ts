@@ -12,6 +12,7 @@ import { AlertsModule } from './alerts/alerts.module'
 import { AiInsightsModule } from './ai-insights/ai-insights.module'
 import { MonitoringModule } from './monitoring/monitoring.module'
 import { ThreatAnalysisModule } from './threat-analysis/threat-analysis.module'
+import { NotificationsModule } from './notifications/notifications.module'
 import { DashboardModule } from './dashboard/dashboard.module'
 import { AppController } from './app.controller'
 
@@ -29,6 +30,7 @@ import { AppController } from './app.controller'
     AiInsightsModule,
     MonitoringModule,
     ThreatAnalysisModule,
+    NotificationsModule,
     DashboardModule,
   ],
   controllers: [AppController],

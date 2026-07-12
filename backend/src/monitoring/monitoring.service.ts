@@ -10,6 +10,7 @@ import {
   ownershipTransferredInterface,
 } from '../ethereum/ethereum-provider.service'
 import { MonitoringRepository } from './monitoring.repository'
+import { MonitoringStatusService } from './monitoring-status.service'
 import { AiAnalysisService } from './ai-analysis.service'
 import { LargeTransferDetector } from './detectors/large-transfer.detector'
 import { ApprovalDetector } from './detectors/approval.detector'
@@ -18,6 +19,7 @@ import { NewContractDetector } from './detectors/new-contract.detector'
 import { WalletInactiveDetector } from './detectors/wallet-inactive.detector'
 import type { DecodedEventContext, EventDetector } from './detectors/detector.interface'
 import { AlertsService } from '../alerts/alerts.service'
+import { NotificationsService } from '../notifications/notifications.service'
 
 const BACKFILL_BLOCKS = 50
 const MAX_BLOCK_RANGE_PER_TICK = 50
@@ -35,8 +37,10 @@ export class MonitoringService {
   constructor(
     private readonly ethereumProvider: EthereumProviderService,
     private readonly monitoringRepository: MonitoringRepository,
+    private readonly statusService: MonitoringStatusService,
     private readonly alertsService: AlertsService,
     private readonly aiAnalysisService: AiAnalysisService,
+    private readonly notificationsService: NotificationsService,
     largeTransferDetector: LargeTransferDetector,
     approvalDetector: ApprovalDetector,
     ownershipDetector: OwnershipDetector,
@@ -195,14 +199,16 @@ export class MonitoringService {
     walletAddress: string,
     knownCounterparties: Set<string>,
   ): Promise<void> {
+    this.statusService.setPhase('analyzing')
     const context = await this.buildDetectorContext(event, walletAddress, knownCounterparties)
 
     for (const detector of this.eventDetectors) {
       const result = detector.detect(context)
       if (!result) continue
 
+      this.statusService.setPhase('ai-analysis')
       const analysis = this.aiAnalysisService.analyze(result)
-      await this.monitoringRepository.createAlertWithInsight(
+      const { alert } = await this.monitoringRepository.createAlertWithInsight(
         {
           walletId: event.walletId,
           blockchainEventId: event.id,
@@ -218,6 +224,8 @@ export class MonitoringService {
           riskScore: analysis.riskScore,
         },
       )
+
+      await this.notificationsService.notifyForAlert(alert)
     }
 
     if (event.toAddress) knownCounterparties.add(event.toAddress.toLowerCase())
@@ -262,8 +270,9 @@ export class MonitoringService {
     const recentAlert = await this.alertsService.findLatestByWalletAndTitle(wallet.id, result.title)
     if (recentAlert && Date.now() - recentAlert.createdAt.getTime() < INACTIVITY_ALERT_COOLDOWN_MS) return
 
+    this.statusService.setPhase('ai-analysis')
     const analysis = this.aiAnalysisService.analyze(result)
-    await this.monitoringRepository.createAlertWithInsight(
+    const { alert } = await this.monitoringRepository.createAlertWithInsight(
       { walletId: wallet.id, severity: result.severity, title: result.title, description: result.description },
       {
         walletId: wallet.id,
@@ -273,5 +282,7 @@ export class MonitoringService {
         riskScore: analysis.riskScore,
       },
     )
+
+    await this.notificationsService.notifyForAlert(alert)
   }
 }

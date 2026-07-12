@@ -160,15 +160,16 @@ model RiskHistory {
 }
 
 model Notification {
-  id       String              @id @default(uuid())
-  walletId String
-  wallet   Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
-  alertId  String?
-  alert    Alert?              @relation(fields: [alertId], references: [id], onDelete: SetNull)
-  channel  NotificationChannel
-  status   NotificationStatus  @default(PENDING)
-  sentAt   DateTime?
+  id        String              @id @default(uuid())
+  walletId  String
+  wallet    Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  alertId   String?
+  alert     Alert?              @relation(fields: [alertId], references: [id], onDelete: SetNull)
+  channel   NotificationChannel
+  status    NotificationStatus  @default(PENDING)
+  sentAt    DateTime?
+  createdAt DateTime            @default(now())
 
-  @@index([walletId])
+  @@index([walletId, createdAt])
   @@map("notifications")
 }
