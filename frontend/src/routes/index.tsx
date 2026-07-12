@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import LiquidEther from '../components/LiquidEther'
 import BlurText from '../components/BlurText'
 
@@ -104,18 +104,18 @@ function LandingPage() {
             className="mt-6 max-w-2xl justify-center text-base text-[var(--ink-soft)] sm:text-lg"
           />
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#pipeline"
+            <Link
+              to="/register"
               className="rounded-full bg-[linear-gradient(90deg,var(--indigo),var(--cyan))] px-6 py-3 text-sm font-semibold text-white no-underline shadow-[0_12px_30px_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5"
             >
-              See how it works
-            </a>
-            <a
-              href="#detection"
+              Get Started
+            </Link>
+            <Link
+              to="/login"
               className="rounded-full border border-[var(--line-strong)] bg-white/5 px-6 py-3 text-sm font-semibold text-[var(--ink)] no-underline transition hover:-translate-y-0.5 hover:border-[var(--cyan)]"
             >
-              What it detects
-            </a>
+              Login
+            </Link>
           </div>
 
           <div className="mt-14 flex flex-wrap items-center justify-center gap-3 text-xs text-[var(--ink-faint)]">

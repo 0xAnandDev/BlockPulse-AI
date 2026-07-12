@@ -12,33 +12,25 @@ export default function Header() {
           <span className="font-display">BlockPulse AI</span>
         </Link>
 
-        <div className="order-3 flex w-full flex-wrap items-center gap-x-6 gap-y-1 pb-1 text-sm sm:order-none sm:w-auto sm:flex-nowrap sm:pb-0 lg:hidden">
-          <a href="#pipeline" className="nav-link">
-            Pipeline
-          </a>
+        <div className="order-3 flex w-full flex-wrap items-center gap-x-6 gap-y-1 pb-1 text-sm sm:order-none sm:w-auto sm:flex-nowrap sm:pb-0">
           <a href="#detection" className="nav-link">
-            Detection
+            Features
           </a>
-          <a href="#stack" className="nav-link">
-            Tech Stack
-          </a>
-          <a
-            href="https://github.com/0xAnandDev/BlockPulse-AI"
-            target="_blank"
-            rel="noreferrer"
-            className="nav-link"
-          >
-            GitHub
+          <a href="#pipeline" className="nav-link">
+            How It Works
           </a>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
-          <a
-            href="#pipeline"
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <Link to="/login" className="nav-link px-2 text-sm sm:px-0">
+            Login
+          </Link>
+          <Link
+            to="/register"
             className="rounded-full border border-[var(--chip-line)] bg-[linear-gradient(90deg,rgba(99,102,241,0.9),rgba(34,211,238,0.9))] px-4 py-2 text-sm font-semibold text-white no-underline shadow-[0_8px_24px_rgba(99,102,241,0.25)] transition hover:-translate-y-0.5"
           >
-            See it in action
-          </a>
+            Get Started
+          </Link>
         </div>
       </nav>
     </header>
