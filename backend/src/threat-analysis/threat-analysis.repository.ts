@@ -10,6 +10,14 @@ export class ThreatAnalysisRepository {
     return this.prisma.blockchainEvent.findMany({ where: { walletId }, orderBy: { createdAt: 'asc' } })
   }
 
+  getRecentEventsForWallet(walletId: string, take = 50): Promise<Array<BlockchainEvent>> {
+    return this.prisma.blockchainEvent.findMany({ where: { walletId }, orderBy: { createdAt: 'desc' }, take })
+  }
+
+  getWalletRaw(walletId: string): Promise<Wallet | null> {
+    return this.prisma.wallet.findUnique({ where: { id: walletId } })
+  }
+
   getAlertsForWallet(walletId: string): Promise<Array<Alert>> {
     return this.prisma.alert.findMany({ where: { walletId }, orderBy: { createdAt: 'desc' } })
   }

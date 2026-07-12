@@ -39,6 +39,15 @@ export class AlertsRepository {
     })
   }
 
+  findAllForWallet(walletId: string, take = 50): Promise<Array<AlertWithNetwork>> {
+    return this.prisma.alert.findMany({
+      where: { walletId },
+      orderBy: { createdAt: 'desc' },
+      take,
+      include: { wallet: { select: { network: true } } },
+    })
+  }
+
   /** Most recent alert of a given title for a wallet, used to de-duplicate recurring conditions (e.g. inactivity). */
   findLatestByWalletAndTitle(walletId: string, title: string): Promise<Alert | null> {
     return this.prisma.alert.findFirst({

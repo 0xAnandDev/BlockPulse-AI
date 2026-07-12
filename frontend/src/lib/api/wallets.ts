@@ -31,6 +31,11 @@ export async function getWallets() {
   return data
 }
 
+export async function getWallet(id: string) {
+  const { data } = await apiClient.get<WalletDto>(`/wallets/${id}`)
+  return data
+}
+
 export async function createWallet(input: CreateWalletInput) {
   const { data } = await apiClient.post<WalletDto>('/wallets', input)
   return data

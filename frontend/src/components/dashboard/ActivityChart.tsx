@@ -8,9 +8,21 @@ const PAD_Y = 16
 
 export interface ActivityChartProps {
   data: Array<ChartPoint>
+  kicker?: string
+  title?: string
+  subtitle?: string
+  unitLabel?: string
+  peakLabel?: string
 }
 
-export default function ActivityChart({ data }: ActivityChartProps) {
+export default function ActivityChart({
+  data,
+  kicker = 'Activity graph',
+  title = 'Transactions monitored',
+  subtitle = 'Last 24 hours',
+  unitLabel = 'txns',
+  peakLabel = 'transactions monitored in a single window',
+}: ActivityChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
@@ -60,10 +72,10 @@ export default function ActivityChart({ data }: ActivityChartProps) {
     <div className="panel rounded-2xl p-5">
       <div className="flex items-baseline justify-between">
         <div>
-          <p className="kicker mb-1">Activity graph</p>
-          <h2 className="display-title text-lg font-bold text-[var(--ink)]">Transactions monitored</h2>
+          <p className="kicker mb-1">{kicker}</p>
+          <h2 className="display-title text-lg font-bold text-[var(--ink)]">{title}</h2>
         </div>
-        <p className="text-xs text-[var(--ink-faint)]">Last 24 hours</p>
+        <p className="text-xs text-[var(--ink-faint)]">{subtitle}</p>
       </div>
 
       <div className="relative mt-4">
@@ -129,13 +141,13 @@ export default function ActivityChart({ data }: ActivityChartProps) {
               top: `${(active.y / HEIGHT) * 100 - 4}%`,
             }}
           >
-            <p className="font-semibold text-[var(--ink)]">{active.value} txns</p>
+            <p className="font-semibold text-[var(--ink)]">{active.value} {unitLabel}</p>
             <p className="text-[var(--ink-faint)]">{active.label}</p>
           </div>
         )}
       </div>
 
-      <p className="mt-3 text-xs text-[var(--ink-faint)]">Peak: {maxValue} transactions monitored in a single window</p>
+      <p className="mt-3 text-xs text-[var(--ink-faint)]">Peak: {maxValue} {peakLabel}</p>
     </div>
   )
 }

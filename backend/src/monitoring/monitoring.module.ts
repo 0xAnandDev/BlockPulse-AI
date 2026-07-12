@@ -4,6 +4,7 @@ import { MonitoringController } from './monitoring.controller'
 import { MonitoringService } from './monitoring.service'
 import { MonitoringRepository } from './monitoring.repository'
 import { MonitoringScheduler } from './monitoring.scheduler'
+import { MonitoringStatusService } from './monitoring-status.service'
 import { AiAnalysisService } from './ai-analysis.service'
 import { LargeTransferDetector } from './detectors/large-transfer.detector'
 import { ApprovalDetector } from './detectors/approval.detector'
@@ -18,6 +19,7 @@ import { WalletInactiveDetector } from './detectors/wallet-inactive.detector'
     MonitoringService,
     MonitoringRepository,
     MonitoringScheduler,
+    MonitoringStatusService,
     AiAnalysisService,
     LargeTransferDetector,
     ApprovalDetector,
@@ -25,6 +27,6 @@ import { WalletInactiveDetector } from './detectors/wallet-inactive.detector'
     NewContractDetector,
     WalletInactiveDetector,
   ],
-  exports: [MonitoringRepository],
+  exports: [MonitoringRepository, MonitoringStatusService],
 })
 export class MonitoringModule {}

@@ -6,7 +6,7 @@ import type { WalletSecurityProfile } from './interfaces/wallet-security-profile
 const RECENT_WINDOW_MS = 24 * 60 * 60 * 1000
 const DAY_MS = 24 * 60 * 60 * 1000
 
-export type WalletLike = Pick<Wallet, 'id' | 'walletName' | 'walletAddress' | 'network' | 'createdAt'>
+export type WalletLike = Pick<Wallet, 'id' | 'walletName' | 'walletAddress' | 'network' | 'createdAt' | 'isMonitoring'>
 
 /** Builds the continuously-updated wallet security profile from already-persisted events and alerts. */
 @Injectable()

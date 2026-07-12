@@ -22,6 +22,11 @@ export class AlertsService {
     return alerts.map(toAlertDto)
   }
 
+  async findAllForWallet(walletId: string): Promise<Array<AlertDto>> {
+    const alerts = await this.alertsRepository.findAllForWallet(walletId)
+    return alerts.map(toAlertDto)
+  }
+
   findLatestByWalletAndTitle(walletId: string, title: string): Promise<Alert | null> {
     return this.alertsRepository.findLatestByWalletAndTitle(walletId, title)
   }

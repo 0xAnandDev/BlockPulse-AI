@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { Link } from '@tanstack/react-router'
 import { Eye, Pause, Play, Trash2 } from 'lucide-react'
 import RiskBadge from './RiskBadge'
 import type { Wallet } from '../../lib/dashboard/types'
@@ -46,13 +47,14 @@ export default function WalletCard({ wallet, onToggleMonitoring, onDelete }: Wal
       <div className="flex items-center justify-between border-t border-[var(--line)] pt-4">
         <RiskBadge risk={wallet.riskScore} />
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
+          <Link
+            to="/wallets/$id"
+            params={{ id: wallet.id }}
             title="View wallet"
             className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink-soft)] transition hover:bg-white/8 hover:text-[var(--ink)]"
           >
             <Eye className="h-4 w-4" aria-hidden="true" />
-          </button>
+          </Link>
           <button
             type="button"
             title={wallet.isMonitoring ? 'Pause monitoring' : 'Resume monitoring'}

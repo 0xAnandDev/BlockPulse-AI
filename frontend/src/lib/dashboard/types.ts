@@ -68,3 +68,74 @@ export interface DashboardSummary {
   activityGraph: Array<ChartPoint>
   latestInsights: Array<AiFeedItem>
 }
+
+export interface WalletSecurityProfile {
+  walletAge: number
+  totalTransactions: number
+  recentTransactions: number
+  activeContracts: number
+  uniqueRecipients: number
+  approvalCount: number
+  ownershipChanges: number
+  largeTransfers: number
+  lastActivity: string | null
+  averageTransactionValue: string
+  riskTrend: 'increasing' | 'decreasing' | 'stable'
+  monitoringDuration: number
+}
+
+export interface RiskHistoryPoint {
+  timestamp: string
+  threatScore: number
+  confidence: number
+  summary: string
+}
+
+export interface WalletSecurity {
+  wallet: { id: string; walletName: string; walletAddress: string; network: string }
+  threatScore: number
+  confidence: number
+  riskLevel: RiskLevel | 'safe'
+  recommendations: Array<string>
+  riskHistory: Array<RiskHistoryPoint>
+  securityProfile: WalletSecurityProfile
+}
+
+export interface WalletEvent {
+  id: string
+  transactionHash: string
+  blockNumber: string
+  eventType: string
+  network: string
+  fromAddress: string
+  toAddress: string | null
+  value: string
+  status: string
+  createdAt: string
+}
+
+export type MonitoringPhase = 'idle' | 'scanning' | 'analyzing' | 'ai-analysis' | 'threat-score-updated'
+
+export interface MonitoringStatus {
+  phase: MonitoringPhase
+  lastScannedBlock: string | null
+  latestChainBlock: number
+  nextScanInSeconds: number
+  pollIntervalSeconds: number
+}
+
+export interface AssistantReply {
+  answer: string
+  threatScore: number
+  riskLevel: RiskLevel | 'safe'
+}
+
+export interface NotificationItem {
+  id: string
+  title: string
+  detail: string
+  walletName: string
+  channel: 'email' | 'telegram'
+  status: 'sent' | 'failed' | 'pending'
+  time: string
+}
