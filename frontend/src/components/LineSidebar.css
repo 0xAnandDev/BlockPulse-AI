@@ -46,7 +46,16 @@
   font-size: var(--font-size);
   line-height: 1.2;
   color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
-  transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
+  padding: 0.3rem 0.7rem;
+  margin-left: -0.7rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, #05070d calc(var(--effect, 0) * 72%), transparent);
+  backdrop-filter: blur(calc(var(--effect, 0) * 6px));
+  opacity: calc(var(--effect, 0) * var(--effect, 0));
+  transform: translateX(calc(-6px + var(--effect, 0) * (var(--max-shift) + 6px)));
+  transition: opacity 0.15s ease-out;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .line-sidebar__index {

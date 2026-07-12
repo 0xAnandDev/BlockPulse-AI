@@ -58,11 +58,9 @@ export default function LineSidebar({
   const currentRef = useRef<Array<number>>([])
   const rafRef = useRef<number | null>(null)
   const lastRef = useRef(0)
-  const activeRef = useRef(defaultActive)
   const smoothingRef = useRef(smoothing)
   const [activeIndex, setActiveIndex] = useState<number | null>(defaultActive)
 
-  activeRef.current = activeIndex
   smoothingRef.current = smoothing
 
   const runFrame = useCallback((now: number) => {
@@ -76,7 +74,7 @@ export default function LineSidebar({
     for (let i = 0; i < els.length; i++) {
       const el = els[i]
       if (!el) continue
-      const target = Math.max(targetsRef.current[i] || 0, activeRef.current === i ? 1 : 0)
+      const target = targetsRef.current[i] || 0
       const cur = currentRef.current[i] || 0
       const next = cur + (target - cur) * k
       const settled = Math.abs(target - next) < 0.0015
