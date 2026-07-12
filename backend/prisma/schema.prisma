@@ -12,6 +12,43 @@ enum Role {
   ADMIN
 }
 
+enum EventType {
+  TRANSFER
+  APPROVAL
+  OWNERSHIP_TRANSFER
+  CONTRACT_INTERACTION
+  OTHER
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  OPEN
+  RESOLVED
+  IGNORED
+}
+
+enum NotificationChannel {
+  EMAIL
+  TELEGRAM
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
 model User {
   id           String   @id @default(uuid())
   fullName     String
@@ -22,5 +59,116 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  wallets Wallet[]
+
   @@map("users")
+}
+
+model Wallet {
+  id                 String   @id @default(uuid())
+  walletName         String
+  walletAddress      String
+  network            String
+  isMonitoring       Boolean  @default(true)
+  /// Highest Sepolia block number already scanned for this wallet — prevents reprocessing.
+  lastProcessedBlock BigInt?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  events  BlockchainEvent[]
+  alerts  Alert[]
+  insights AIInsight[]
+  notifications Notification[]
+  riskHistory   RiskHistory[]
+
+  @@index([userId])
+  @@map("wallets")
+}
+
+model BlockchainEvent {
+  id              String             @id @default(uuid())
+  walletId        String
+  wallet          Wallet             @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  transactionHash String
+  blockNumber     BigInt
+  eventType       EventType
+  network         String             @default("sepolia")
+  fromAddress     String
+  toAddress       String?
+  value           String             @default("0")
+  gasUsed         String?
+  status          TransactionStatus  @default(SUCCESS)
+  rawData         Json
+  createdAt       DateTime           @default(now())
+
+  alerts Alert[]
+
+  @@unique([walletId, transactionHash, eventType])
+  @@index([walletId, createdAt])
+  @@map("blockchain_events")
+}
+
+model Alert {
+  id                String      @id @default(uuid())
+  walletId          String
+  wallet            Wallet      @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  blockchainEventId String?
+  blockchainEvent   BlockchainEvent? @relation(fields: [blockchainEventId], references: [id], onDelete: SetNull)
+  severity          Severity
+  title             String
+  description       String
+  status            AlertStatus @default(OPEN)
+  createdAt         DateTime    @default(now())
+
+  insights      AIInsight[]
+  notifications Notification[]
+
+  @@index([walletId, createdAt])
+  @@map("alerts")
+}
+
+model AIInsight {
+  id             String   @id @default(uuid())
+  walletId       String
+  wallet         Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  alertId        String?
+  alert          Alert?   @relation(fields: [alertId], references: [id], onDelete: SetNull)
+  summary        String
+  recommendation String
+  confidence     Float
+  riskScore      String
+  createdAt      DateTime @default(now())
+
+  @@index([walletId, createdAt])
+  @@map("ai_insights")
+}
+
+model RiskHistory {
+  id          String   @id @default(uuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  threatScore Int
+  confidence  Int
+  summary     String
+  createdAt   DateTime @default(now())
+
+  @@index([walletId, createdAt])
+  @@map("risk_history")
+}
+
+model Notification {
+  id       String              @id @default(uuid())
+  walletId String
+  wallet   Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  alertId  String?
+  alert    Alert?              @relation(fields: [alertId], references: [id], onDelete: SetNull)
+  channel  NotificationChannel
+  status   NotificationStatus  @default(PENDING)
+  sentAt   DateTime?
+
+  @@index([walletId])
+  @@map("notifications")
 }

@@ -2,17 +2,26 @@ import { Cpu, RefreshCw, ShieldCheck, Wallet } from 'lucide-react'
 
 export interface ProtectionStatusBarProps {
   walletsProtected: number
+  monitoringCount: number
 }
 
-export default function ProtectionStatusBar({ walletsProtected }: ProtectionStatusBarProps) {
+export default function ProtectionStatusBar({ walletsProtected, monitoringCount }: ProtectionStatusBarProps) {
+  const isMonitoringActive = monitoringCount > 0
+
   return (
     <div className="panel flex flex-wrap items-center gap-x-8 gap-y-4 rounded-2xl px-6 py-4">
       <div className="flex items-center gap-2.5">
         <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--risk-low)] opacity-60" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--risk-low)]" />
+          {isMonitoringActive && (
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--risk-low)] opacity-60" />
+          )}
+          <span
+            className={`relative inline-flex h-2.5 w-2.5 rounded-full ${isMonitoringActive ? 'bg-[var(--risk-low)]' : 'bg-[var(--ink-faint)]'}`}
+          />
         </span>
-        <span className="text-sm font-semibold text-[var(--ink)]">Monitoring Active</span>
+        <span className="text-sm font-semibold text-[var(--ink)]">
+          {isMonitoringActive ? `Monitoring Active (${monitoringCount})` : 'Monitoring Paused'}
+        </span>
       </div>
 
       <span className="hidden h-6 w-px bg-[var(--line)] sm:block" aria-hidden="true" />
