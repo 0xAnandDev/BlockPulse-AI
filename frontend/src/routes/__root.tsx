@@ -1,9 +1,11 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRoute, useRouterState } from '@tanstack/react-router'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import SidebarNav from '../components/SidebarNav'
 
 import appCss from '../styles.css?url'
+
+const APP_ROUTE_PREFIX = /^\/(dashboard|wallets|alerts|ai-insights|notifications|settings)(\/|$)/
 
 export const Route = createRootRoute({
   head: () => ({
@@ -35,16 +37,23 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const isAppRoute = APP_ROUTE_PREFIX.test(pathname)
+
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(99,102,241,0.35)]">
-        <Header />
-        <SidebarNav />
+        {!isAppRoute && (
+          <>
+            <Header />
+            <SidebarNav />
+          </>
+        )}
         {children}
-        <Footer />
+        {!isAppRoute && <Footer />}
         <Scripts />
       </body>
     </html>
