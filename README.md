@@ -15,6 +15,9 @@ BlockPulse AI watches your wallets on Ethereum Sepolia around the clock, scores 
 ![Ethers.js](https://img.shields.io/badge/ethers.js-6-2535A0)
 [![GitHub stars](https://img.shields.io/github/stars/0xAnandDev/BlockPulse-AI?style=social)](https://github.com/0xAnandDev/BlockPulse-AI/stargazers)
 
+[![Live on Vercel](https://img.shields.io/badge/Live%20App-Vercel-000000?logo=vercel&logoColor=white)](https://block-pulse-ai.vercel.app/)
+[![API on Render](https://img.shields.io/badge/Backend%20API-Render-46E3B7?logo=render&logoColor=white)](https://blockpulse-ai.onrender.com)
+
 [Overview](#overview) •
 [Features](#features) •
 [Screenshots](#screenshots) •
